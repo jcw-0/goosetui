@@ -51,7 +51,7 @@ int GTUI_draw(GTUI_window* w, bool affect_children) {
         /* highlight */
     } 
 
-    if (redraw_children && w->n_children > 0) 
+    if (affect_children && w->n_children > 0) 
         for (int x = 0; x < w->n_children; x++) {
             GTUI_draw((w->children + x));    	
 }
