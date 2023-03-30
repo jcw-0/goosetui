@@ -4,8 +4,18 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define POS_CENTER -1
-#define POS_
+
+
+#define GTUI_POS_CENTER              -1
+#define GTUI_POS_DISTANCE_FROM_LEFT  -2
+#define GTUI_POS_DISTANCE_FROM_RIGHT -3
+
+/* triggers */
+#define GTUI_TRIGGER_MOVE               -1
+#define GTUI_TRIGGER_SELECT             -2
+#define GTUI_TRIGGER_RESIZE             -3
+#define GTUI_TRIGGER_CLOSE              -5
+#define GTUI_TRIGGER_OPEN               -6
 
 enum GTUI_window_type {
     /* containers have no data */
@@ -18,7 +28,7 @@ enum GTUI_window_type {
     button = 4
 };
 
-static struct v2 { uint16_t x, uint16_t y };
+struct GTUI_v2 { uint16_t x, uint16_t y };
 
 struct GTUI_window {
     bool is_hidden;
@@ -41,26 +51,15 @@ struct GTUI_window {
     GTUI_window** children;
     uint8_t n_children;
 
-    uint8_t id_trigger;
-    (void)** on_trigger;
+    uint8_t* triggers;
+    (void) trigger**;
 };
-
-/* w =  null -> initialize new window;
- * w = !null -> initialize a new window, exact copy of w */
-GTUI_window* GTUI_window_create(GTUI_window* w) {
-    static int n_windows;
-    static GTUI_window* _w = NULL;
-    if (NULL == w->parent) { void* _w = malloc(64 * sizeof (GTUI_window)); n_windows += (!NULL == _w)? 64: NULL; }
+struct GTUI_window_attr {
+    bool GTUI_window_type type;
     
-    if (NULL == w) return _w;
-    else 
 }
 
-int GTUI_window_destroy(GTUI_window* w, bool keep_children) {}
-
-void GTUI_window_reposition(GTUI_window* w) {}
-
-void GTUI_window_change_color(GTUI_window* w) {}
-
-
-int GTUI_read_view_from_xml(GTUI_window* src) {}
+int GTUI_window_destroy(struct GTUI_window* w, bool keep_children);
+void GTUI_window_reposition(struct GTUI_window* w);
+void GTUI_window_change_color(struct GTUI_window* w);
+int GTUI_read_view_from_xml(struct GTUI_window* src);
