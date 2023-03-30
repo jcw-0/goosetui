@@ -1,33 +1,39 @@
-
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <termios.h>
+#include <signal.h>
 
 /*  */
 #include "goose-tui.h"
+#include "stack.c"
 
-static unsigned int vt_width;
-static unsigned int vt_height;
-static uint8_t** screen_buffer_buffers;
-static uint8_t* focused_screen_buffer = *buffers;
+/* collection of windows and attributes */
+struct GTUI_screen {
+    int n_windows;    
+    struct stack_t* first;
+}
 
-static GTUI_window* focused_window;
-static GTUI_window* focused_element;
 
-static int n_windows;
+static unsigned int te_width;
+static unsigned int te_height;
+static window* focused_window;
+static int n_screen;
+static struct stack_t** screen_window_stack = {0};
 
-void cleanup(void) {
+static void cleanup(void) {
     say("\x1b[2J");
     say("\x1b[?1049l");
     say("\x1b[?25h");
+    /* free pointers */
 }
 
 void resize(int i) {
     struct winsize wsz;
     ioctl(1, TIOCGWINSZ, &wsz);
-    vt_width  = wsz.ws_col;
-    vt_height = wsz.ws_row;
+    te_width  = wsz.ws_col;
+    te_height = wsz.ws_row;
 }
 
 static void setup() {
@@ -37,7 +43,7 @@ static void setup() {
     screen_buffer = malloc(vt_width * vt_height);
 }
 
-int GTUI_draw(GTUI_window* w, bool affect_children) {
+int GTUI_draw(GTUI_window* w) {
     
     switch (w->type) {
 	    case container:
@@ -51,7 +57,7 @@ int GTUI_draw(GTUI_window* w, bool affect_children) {
         /* highlight */
     } 
 
-    if (affect_children && w->n_children > 0) 
+    if (w->n_children > 0) 
         for (int x = 0; x < w->n_children; x++) {
             GTUI_draw((w->children + x));    	
 }
@@ -59,9 +65,8 @@ int GTUI_draw(GTUI_window* w, bool affect_children) {
 
 /* w =  null -> initialize new window;
  * w = !null -> initialize a new window, exact copy of w */
-GTUI_window* GTUI_window_create(GTUI_window* parent, GTUI_window* w) {
-    static GTUI_window* _w = NULL;
-    if (NULL == parent) { focused_screen_buffer = malloc(64 * sizeof (GTUI_window)); n_windows += (!NULL == _w)? 64: NULL; }
+GTUI_window* GTUI_window_create(GTUI_window* w) {
+    if (NULL == parent) { *(screen_window_stack + n_screen) = malloc(64 * sizeof (GTUI_window)); n_windows += (!NULL == _w)? 64: NULL; }
     
     if (NULL == w) return _w;
     else 
