@@ -6,7 +6,7 @@
 #include <signal.h>
 
 /*  */
-#include "goose-tui.h"
+#include "goosetui.h"
 #include "stack.c"
 
 /* collection of windows and attributes */
@@ -23,9 +23,9 @@ static int n_screen;
 static struct stack_t** screen_window_stack = {0};
 
 static void cleanup(void) {
-    say("\x1b[2J");
-    say("\x1b[?1049l");
-    say("\x1b[?25h");
+    write(1, "\x1b[2J", sizeof ("\x1b[2J"));
+    write(1, "\x1b[?1049l", sizeof ("\x1b[?1049l"));
+    write(1, "\x1b[?25h", sizeof ("\x1b[?25h"));
     /* free pointers */
 }
 
