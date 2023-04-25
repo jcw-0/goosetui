@@ -18,7 +18,7 @@ struct GTUI_screen {
 
 static unsigned int te_width;
 static unsigned int te_height;
-static sutrct window* focused_window;
+static struct window* focused_window;
 
 static int n_screen;
 static struct stack_t** screen_window_stack;
