@@ -59,7 +59,7 @@ int GTUI_draw(GTUI_window* w) {
     } 
 
     if (w->n_children > 0) 
-        for (int x = 0; x < w->n_children; x++) {
+        for (int x = 0; x < w->n_children; x++)
             GTUI_draw((w->children + x));    	
 }
 
