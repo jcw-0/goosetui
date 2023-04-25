@@ -10,10 +10,10 @@
 #include "stack.c"
 
 /* collection of windows and attributes */
-struct GTUI_screen {
+struct {
     int n_windows;    
     struct stack_t* first;
-}
+} GTUI_screen;
 
 
 static unsigned int te_width;
