@@ -21,7 +21,7 @@ static unsigned int te_height;
 static sutrct window* focused_window;
 
 static int n_screen;
-static struct stack_t** screen_window_stack = {0};
+static struct stack_t** screen_window_stack;
 
 static void cleanup(void) {
     write(1, "\x1b[2J", sizeof ("\x1b[2J"));
