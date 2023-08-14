@@ -5,23 +5,24 @@
 #include <termios.h>
 #include <signal.h>
 
-/*  */
 #include "goosetui.h"
-#include "stack.c"
 
-/* collection of windows and attributes */
+
+struct { 
+    
+} GTUI_div;
 struct {
-    int n_windows;    
-    struct stack_t* first;
-} GTUI_screen;
+    int n_divs;
+    struct div* root_div;
+} GTUI_window;
 
 
-static unsigned int te_width;
-static unsigned int te_height;
+static unsigned int tern_width;
+static unsigned int term_height;
+static unsigned int n_windows;
+static struct stack_t** window_stack;
 static struct window* focused_window;
-
-static int n_screen;
-static struct stack_t** screen_window_stack;
+static struct div* focused_div;
 
 static void cleanup(void) {
     write(1, "\x1b[2J", sizeof ("\x1b[2J"));
@@ -30,7 +31,7 @@ static void cleanup(void) {
     /* free pointers */
 }
 
-void resize(int i) {
+static void resize(int i) {
     struct winsize wsz;
     ioctl(1, TIOCGWINSZ, &wsz);
     te_width  = wsz.ws_col;
@@ -53,9 +54,9 @@ int GTUI_draw(GTUI_window* w) {
 	    case button:
 	    default:
     }	    
-
-    if (focused_window == w) {
-        /* highlight */
+    for (
+    if (!focused_window == w) {
+        
     } 
 
     if (w->n_children > 0) 
@@ -64,13 +65,11 @@ int GTUI_draw(GTUI_window* w) {
 }
 
 
-/* w =  null -> initialize new window;
- * w = !null -> initialize a new window, exact copy of w */
-GTUI_window* GTUI_window_create(GTUI_window* w) {
-    if (NULL == parent) { *(screen_window_stack + n_screen) = malloc(64 * sizeof (GTUI_window)); n_windows += (!NULL == _w)? 64: NULL; }
-    
-    if (NULL == w) return _w;
-    else 
+/* w =  null -> initialize a new window;
+ * w = !null -> initialize a new window, child of w */
+GTUI_window* GTUI_window_create(GTUI_window* p) {
+    if (NULL == p) { *(screen_window_stack + n_screen) = malloc(64 * sizeof (GTUI_window)); n_windows += (!NULL == _w)? 64: NULL; }
+    return _w;
 }
 
 int GTUI_window_destroy(GTUI_window* w, bool affect_children) {}
